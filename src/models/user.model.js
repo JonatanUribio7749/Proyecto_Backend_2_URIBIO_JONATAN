@@ -1,4 +1,3 @@
-// src/models/user.model.js
 const mongoose = require('mongoose');
 const bcrypt   = require('bcrypt');
 
@@ -12,7 +11,7 @@ const userSchema = new mongoose.Schema({
   role:       { type: String, default: 'user' }
 });
 
-// Hook: antes de guardar, hashear si cambió password
+
 userSchema.pre('save', function(next) {
   if (!this.isModified('password')) return next();
   this.password = bcrypt.hashSync(this.password, 10);
