@@ -1,154 +1,166 @@
-# Proyecto Ecommerce - Entrega 1
+# Proyecto E‑commerce – Entrega Final
 
-Este repositorio contiene la **Primera Entrega** del proyecto de backend para un ecommerce, implementando registro de usuarios, login con JWT y validación de sesión actual.
-
----
-
-## 📋 Descripción
-
-- Modelo **User** con campos: `first_name`, `last_name`, `email`, `age`, `password`, `cartId` y `role`.
-- Hash de contraseña con **bcrypt** (`hashSync`).
-- Autenticación con **Passport**:
-  - Estrategia **Local** para login (`email` + `password`).
-  - Estrategia **JWT** para `current` a partir de cookie.
-- Endpoints:
-  - `POST /api/users/register` → Registro de usuario.
-  - `POST /api/sessions/login`  → Login y emisión de cookie JWT.
-  - `GET  /api/sessions/current`→ Obtención de datos del usuario autenticado.
+**Descripción:**
+Un servidor backend para un e‑commerce construído con Node.js, Express y MongoDB. Cuenta con:
+- Arquitectura limpia: DAO, Repositories, DTOs, Services, Controllers, Middlewares.
+- Autenticación y autorización con Passport (Local + JWT en cookies).
+- Modelos: Users, Products, Carts, Tickets.
+- Roles `admin` y `user` para proteger rutas.
+- Flujo de carrito: crear carrito, añadir/quitar productos.
+- Lógica de compra: restar stock, generar ticket, devolver no procesados.
+- Envío de email de confirmación vía Ethereal (desarrollo).
 
 ---
 
-## 🚀 Requisitos previos
-
-- Node.js v16 o superior.
-- MongoDB en ejecución (local o Atlas).
-- Git (opcional).
-
----
-
-## 🛠️ Instalación
-
-1. **Clonar** el repositorio:
-   ```bash
-   git clone <TU_REPO_URL>
-   cd proyecto-ecommerce
-   ```
-2. **Instalar** dependencias:
-   ```bash
-   npm install
-   ```
-
----
-
-## ⚙️ Configuración
-
-1. Crear un archivo `.env` en la raíz con el siguiente contenido:
-   ```dotenv
-   MONGO_URI=mongodb://localhost:27017/ecommerce
-   JWT_SECRET=TuSecretoMuySeguro
-   JWT_COOKIE_NAME=token
-   PORT=8080
-   ```
-2. Asegurarse de no subir `.env` al repositorio (está incluido en `.gitignore`).
-
----
-
-## ▶️ Ejecución en desarrollo
-
-Iniciar el servidor con **nodemon** para recarga automática:
+## 📂 Estructura del proyecto
 
 ```bash
-npm run dev
-```
-
-O directamente con Node:
-
-```bash
-npm start
-```
-
-El servidor escuchará por defecto en http://localhost:8080.
-
----
-
-## 📝 Endpoints disponibles
-
-### 1. Registro de usuario
-
-- **URL**: `POST /api/users/register`
-- **Headers**: `Content-Type: application/json`
-- **Body**:
-  ```json
-  {
-    "first_name": "Juan",
-    "last_name":  "Pérez",
-    "email":      "juan@ejemplo.com",
-    "age":        28,
-    "password":   "MiPassSegura123"
-  }
-  ```
-- **Respuesta**: `201 Created` con `{ status:'success', payload:{ id, email } }`.
-
-### 2. Login
-
-- **URL**: `POST /api/sessions/login`
-- **Headers**: `Content-Type: application/json`
-- **Body**:
-  ```json
-  {
-    "email":    "juan@ejemplo.com",
-    "password": "MiPassSegura123"
-  }
-  ```
-- **Respuesta**: `200 OK` con `{ status:'success', message:'Login exitoso' }` y se envía cookie **token** (httpOnly).
-
-### 3. Obtener sesión actual
-
-- **URL**: `GET /api/sessions/current`
-- **Autorización**: Cookie `token` enviada automáticamente.
-- **Respuesta**: `200 OK` con `{ status:'success', payload: <datos del usuario> }`.
-
----
-
-## ✅ Verificación
-
-1. Registrar un usuario.
-2. Hacer login y comprobar la cookie en el cliente (Postman o similar).
-3. Llamar a `/api/sessions/current` y verificar que devuelve el perfil de usuario.
-
----
-
-Sube el video a YouTube o Loom y añade el enlace en el README.
-
----
-
-## 📂 Estructura de carpetas
-
-```
-proyecto-ecommerce/
+├── src
+│   ├── config
+│   │   ├── db.js             # Conexión a MongoDB
+│   │   └── passport.js       # Estrategias Passport
+│   ├── controllers
+│   ├── dao
+│   ├── dtos
+│   ├── middlewares
+│   ├── models
+│   ├── repositories
+│   ├── routes
+│   ├── services
+│   └── app.js
 ├── .env
-├── .gitignore
 ├── package.json
-├── src/
-│   ├── app.js
-│   ├── server.js
-│   ├── config/
-│   │   ├── db.js
-│   │   └── passport.js
-│   ├── models/
-│   │   ├── user.model.js
-│   │   └── cart.model.js
-│   ├── services/
-│   │   └── jwt.js
-│   ├── controllers/
-│   │   ├── users.controller.js
-│   │   └── sessions.controller.js
-│   └── routes/
-│       ├── users.router.js
-│       └── sessions.router.js
 └── README.md
 ```
 
 ---
+
+## ⚙️ Requisitos previos
+
+- Node.js v14+ y npm
+- MongoDB corriendo local o remoto
+- (Opcional) Git para clonar repositorio
+
+---
+
+## 🛠️ Instalación y configuración
+
+1. Clona el repositorio:
+    ```bash
+    git clone https://github.com/tu-usuario/proyecto-ecommerce.git
+    cd proyecto-ecommerce
+    ```
+2. Instala dependencias:
+    ```bash
+    npm install
+    ```
+3. Crea un archivo `.env` en la raíz y define:
+    ```dotenv
+    PORT=8080
+    MONGODB_URI=mongodb://localhost:27017/ecommerce
+    JWT_SECRET=tu_secreto_jwt
+    JWT_COOKIE_NAME=jwtCookie
+    # Mailer Ethereal (opción desarrollo)
+    # Opcional variables de Mailtrap si lo prefieres
+    EMAIL_HOST=smtp.ethereal.email
+    EMAIL_PORT=587
+    EMAIL_USER=usuario_ethereal
+    EMAIL_PASS=pass_ethereal
+    ```
+4. Inicia MongoDB (local o tu conexión remota).
+5. Arranca el servidor en modo desarrollo:
+    ```bash
+    npm run dev
+    ```
+6. Verifica en consola:
+    ```text
+    ✅ MongoDB conectado
+    🚀 Server corriendo en http://localhost:8080
+    ```
+
+---
+
+## 🚀 Endpoints disponibles
+
+### Autenticación
+
+- **POST** `/api/users/register`  
+  Registra un usuario. Body JSON:
+  ```json
+  {
+    "first_name": "Ana",
+    "last_name":  "Gómez",
+    "email":      "ana@test.com",
+    "age":        30,
+    "password":   "MiPass123"
+  }
+  ```
+
+- **POST** `/api/sessions/login`  
+  Login; emite cookie `jwtCookie`. Body JSON:
+  ```json
+  { "email":"ana@test.com","password":"MiPass123" }
+  ```
+
+- **GET** `/api/users/current`  
+  Devuelve datos del usuario autenticado (DTO), protegido con JWT.
+
+### Productos (solo admin)
+
+- **GET** `/api/products`  – Lista todos los productos.
+- **GET** `/api/products/:pid`  – Detalle de un producto.
+- **POST** `/api/products`  – Crea un producto. Body JSON:
+  ```json
+  {
+    "title":"Zapatos",
+    "description":"Cómodos",
+    "price":50,
+    "stock":100,
+    "code":"ZAP001"
+  }
+  ```
+- **PUT** `/api/products/:pid`  – Actualiza producto.
+- **DELETE** `/api/products/:pid`  – Elimina producto.
+
+### Carritos y compra
+
+- **POST** `/api/carts`  – Crea un carrito vacío.
+- **GET** `/api/carts/:cid`  – Ver carrito.
+- **POST** `/api/carts/:cid/product/:pid`  – Añade producto (rol `user`).
+- **DELETE** `/api/carts/:cid/product/:pid`  – Quita producto.
+- **POST** `/api/carts/:cid/purchase`  – Finaliza compra: genera ticket, ajusta stock y devuelve `failedProducts`.
+
+### Tickets
+
+- **GET** `/api/tickets/:tid`  – Opcional, obtener ticket por ID.
+
+---
+
+## 📧 Email de confirmación
+
+En desarrollo usamos **Ethereal**:
+
+- Tras purchase verás en consola:
+  ```text
+  Preview URL: https://ethereal.email/message/...  
+  ```
+- Abre ese link para ver el correo HTML de confirmación.
+
+---
+
+## 🌟 Patrones y buenas prácticas
+
+- **DAO**: `src/dao/*.js` abstrae acceso a la BD.
+- **Repository**: `src/repositories/*.js` integra DAO y aplica DTOs.
+- **DTO**: `src/dtos/*.js` filtra campos sensibles.
+- **Controllers/Services**: separación de lógica de negocio.
+- **Middlewares**: `authorize(roles…)` para rutas protegidas.
+- **Passport**: LocalStrategy para login, JwtStrategy para rutas.
+
+---
+
+## 📝 Licencia
+
+Proyecto académico para Coderhouse. 
 
 
